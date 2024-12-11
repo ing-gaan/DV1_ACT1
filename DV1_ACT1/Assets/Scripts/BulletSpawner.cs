@@ -6,16 +6,26 @@ using UnityEngine.Pool;
 
 public class BulletSpawner : MonoBehaviour
 {
-    [SerializeField] private Bullet _bulletPrefab;
+    [SerializeField] private Bullet _littleBulletPrefab;
+    [SerializeField] private Bullet _normalBulletPrefab;
+    [SerializeField] private Bullet _bigBulletPrefab;
+    
+    private ObjectPool<Bullet> _littleBulletPool;
+    private ObjectPool<Bullet> _normalBulletPool;
+    private ObjectPool<Bullet> _bigBulletPool;
 
-    private ObjectPool<Bullet> _bulletPool;
     private ShootDirection _shootDirection;
     private Vector3 _spawnPosition;
+    private Type _bulletType;
+    private Bullet _bulletPrefab;
+    private ObjectPool<Bullet> _bulletPool;
+
 
     void Awake()
     {
-        _bulletPool = new ObjectPool<Bullet>(CreateBullet, GetBullet, ReleaseBullet, DestroyBullet);
-
+        _littleBulletPool = new ObjectPool<Bullet>(CreateBullet, GetBullet, ReleaseBullet, DestroyBullet);
+        _normalBulletPool = new ObjectPool<Bullet>(CreateBullet, GetBullet, ReleaseBullet, DestroyBullet);
+        _bigBulletPool = new ObjectPool<Bullet>(CreateBullet, GetBullet, ReleaseBullet, DestroyBullet);
     }
 
 
@@ -31,10 +41,29 @@ public class BulletSpawner : MonoBehaviour
     }
 
 
-    public void SpawnBullet(Vector3 spawnPosition, ShootDirection shootDirection)
+    public void SpawnBullet(Vector3 spawnPosition, ShootDirection shootDirection, Type bulletType)
     {
         _spawnPosition = spawnPosition;
         _shootDirection = shootDirection;
+        _bulletType = bulletType;
+
+        if (bulletType == typeof(BigBullet))
+        {
+            _bulletPrefab = _bigBulletPrefab;
+            _bulletPool = _bigBulletPool;
+            
+        }
+        else if (bulletType == typeof(LittleBullet))
+        {
+            _bulletPrefab = _littleBulletPrefab;
+            _bulletPool = _littleBulletPool;
+        }
+        else 
+        {
+            _bulletPrefab = _normalBulletPrefab;
+            _bulletPool = _normalBulletPool;
+        }
+
         _bulletPool.Get();
     }
 
@@ -57,7 +86,7 @@ public class BulletSpawner : MonoBehaviour
     }
     private void DestroyBullet(Bullet bullet)
     {
-        throw new NotImplementedException();
+        Destroy(bullet.gameObject);
     }
 }
 

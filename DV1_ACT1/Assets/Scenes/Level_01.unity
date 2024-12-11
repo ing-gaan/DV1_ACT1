@@ -243,7 +243,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937d778c16c3380449d74279ac646181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bulletPrefab: {fileID: 3510885772560121835, guid: 97c97d9bcb0c38149bd97bae94f1befc, type: 3}
+  _littleBulletPrefab: {fileID: 121602252856025505, guid: d2102785100ae024c83e058636bf6041, type: 3}
+  _normalBulletPrefab: {fileID: -3067565359443057548, guid: 97c97d9bcb0c38149bd97bae94f1befc, type: 3}
+  _bigBulletPrefab: {fileID: 8845762088562949464, guid: e87c352d858d27f42b1391e74b4adc87, type: 3}
 --- !u!4 &592826193
 Transform:
   m_ObjectHideFlags: 0
@@ -290,6 +292,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyPrefab: {fileID: 1307890688651528042, guid: f29a8b4eb211ec54c948d52c1a941f39, type: 3}
   _bulletSpawner: {fileID: 592826192}
+  _xSpawnAdjust: 1
+  _ySpawnAdjust: 1
 --- !u!4 &1065443404
 Transform:
   m_ObjectHideFlags: 0
@@ -388,7 +392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05b68083bdfe1bb49b891d688cea7c99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 20
+  _speed: 10
 --- !u!4 &1146667573
 Transform:
   m_ObjectHideFlags: 0
@@ -446,7 +450,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f19b61a6374bcf45b5b9cd51cf20000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _boundaryPrefab: {fileID: 4393322405196247600, guid: cf3fb086802caec4499836689883cc93, type: 3}
   _mainCamera: {fileID: 519420031}
+  _boundaryWidth: 1
+  _shiftBoundaryAdjust: 3
 --- !u!4 &2106661985
 Transform:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@ public class PlayerMove : MonoBehaviour
 
     private void SetDefaults()
     {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         _halfSpriteX = spriteRenderer.size.x / 2;
         _halfSpriteY = spriteRenderer.size.y / 2;
         _clampMinX = SceneController.MinX + _halfSpriteX;
