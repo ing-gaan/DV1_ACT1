@@ -7,11 +7,11 @@ using UnityEngine.Pool;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float _speed = 4.0f;
+    [SerializeField] private float _speed = 4f;
     [SerializeField] private Transform _shootTransform;
-    [SerializeField] private float _minShootDelay = 0.5f;
-    [SerializeField] private float _maxShootDelay = 3.0f;
-    [SerializeField] private float _yRandAdjust = 1.0f;
+    [SerializeField] private float _minSpawnDelay = 0.5f;
+    [SerializeField] private float _maxSpawnDelay = 3f;
+    [SerializeField] private float _yRandAdjust = 1f;
     [Range(0.1f, 1)] [SerializeField]  private float _minSlope;
     [Range(2, 10)] [SerializeField] private float _maxSlope;
 
@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
     private enum YState { UP, DOWN, NONE }
     private YState _yState;
     private float _slope;
+    private float _spawnDelay;
     
     private AudioSource _audioSource;
 
@@ -41,7 +42,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {        
         _audioSource = GetComponent<AudioSource>();
-        _timer = Random.Range(_minShootDelay, _maxShootDelay);
+        _spawnDelay = Random.Range(_minSpawnDelay, _maxSpawnDelay);
 
         _minY = SceneController.MinY + _yRandAdjust;
         _maxY = SceneController.MaxY - _yRandAdjust;
@@ -49,7 +50,6 @@ public class Enemy : MonoBehaviour
         
         _yState = YState.NONE;
         
- 
     }
 
 
@@ -90,9 +90,10 @@ public class Enemy : MonoBehaviour
         transform.Translate(_velocity);
         _timer += Time.deltaTime;
 
-        if(_timer > _maxShootDelay)
+        if(_timer > _spawnDelay)
         {
-            _timer = Random.Range(_minShootDelay, _maxShootDelay);
+            _timer = 0;
+            _spawnDelay = Random.Range(_minSpawnDelay, _maxSpawnDelay);
             _bulletSpawner.SpawnBullet(_shootTransform.position, ShootDirection.Left, typeof(BigBullet), tag);
             _audioSource.Play();
         }

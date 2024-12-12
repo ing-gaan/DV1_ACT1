@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LevelController : MonoBehaviour
+public class MusicController : MonoBehaviour
 {
     [SerializeField] private float _maxMusicVolume = 1f;
     [SerializeField] private float _maxTimeForMaxVolume = 1f;

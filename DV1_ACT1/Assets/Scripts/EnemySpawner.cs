@@ -9,15 +9,17 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Enemy _enemyPrefab;
     [SerializeField] private BulletSpawner _bulletSpawner;
     [SerializeField] private ExplosionSpawner _explosionSpawner;
-    [SerializeField] private float _xSpawnAdjust = 1.0f;
-    [SerializeField] private float _ySpawnAdjust = 1.0f;
-    [SerializeField] private float _spawnDelay = 5.0f;
+    [SerializeField] private float _xSpawnAdjust = 1f;
+    [SerializeField] private float _ySpawnAdjust = 1f;
+    [SerializeField] private float _minSpawnDelay = 0.5f;
+    [SerializeField] private float _maxSpawnDelay = 3f;
 
     private ObjectPool<Enemy> _enemyPool;
 
-    private float _timer;
+    private float _timer = 0;
     private float _xSpawnPos;
     private float ySpawnPos;
+    private float _spawnDelay;
 
 
     private void Awake()
@@ -40,6 +42,7 @@ public class EnemySpawner : MonoBehaviour
         if (_timer > _spawnDelay)
         {
             _timer = 0;
+            _spawnDelay = Random.Range(_minSpawnDelay, _maxSpawnDelay);
             _enemyPool.Get();
         }
     }
