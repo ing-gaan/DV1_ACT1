@@ -8,8 +8,10 @@ public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private Enemy _enemyPrefab;
     [SerializeField] private BulletSpawner _bulletSpawner;
+    [SerializeField] private ExplosionSpawner _explosionSpawner;
     [SerializeField] private float _xSpawnAdjust = 1.0f;
     [SerializeField] private float _ySpawnAdjust = 1.0f;
+    [SerializeField] private float _spawnDelay = 5.0f;
 
     private ObjectPool<Enemy> _enemyPool;
 
@@ -35,7 +37,7 @@ public class EnemySpawner : MonoBehaviour
     {
         _timer += Time.deltaTime;
 
-        if (_timer > 2)
+        if (_timer > _spawnDelay)
         {
             _timer = 0;
             _enemyPool.Get();
@@ -48,6 +50,7 @@ public class EnemySpawner : MonoBehaviour
         Enemy enemy = Instantiate(_enemyPrefab, SetSpawnPosition(), Quaternion.identity);
         enemy.EnemyPool = _enemyPool;
         enemy.BulletSpawner = _bulletSpawner;
+        enemy.ExplosionSpawner = _explosionSpawner;
         return enemy;
     }
     private void GetEnemy(Enemy enemy)

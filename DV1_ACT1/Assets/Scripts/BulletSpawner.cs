@@ -19,6 +19,7 @@ public class BulletSpawner : MonoBehaviour
     private Type _bulletType;
     private Bullet _bulletPrefab;
     private ObjectPool<Bullet> _bulletPool;
+    private string _tagShotIt;
 
 
     void Awake()
@@ -41,11 +42,12 @@ public class BulletSpawner : MonoBehaviour
     }
 
 
-    public void SpawnBullet(Vector3 spawnPosition, ShootDirection shootDirection, Type bulletType)
+    public void SpawnBullet(Vector3 spawnPosition, ShootDirection shootDirection, Type bulletType, string tagShotIt)
     {
         _spawnPosition = spawnPosition;
         _shootDirection = shootDirection;
         _bulletType = bulletType;
+        _tagShotIt = tagShotIt;
 
         if (bulletType == typeof(BigBullet))
         {
@@ -78,6 +80,7 @@ public class BulletSpawner : MonoBehaviour
     {
         bullet.BulletDirection = _shootDirection;
         bullet.transform.position = _spawnPosition;
+        bullet.TagShotIt = _tagShotIt;
         bullet.gameObject.SetActive(true);
     }
     private void ReleaseBullet(Bullet bullet)

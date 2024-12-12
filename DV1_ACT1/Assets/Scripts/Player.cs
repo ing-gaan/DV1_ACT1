@@ -6,12 +6,14 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private BulletSpawner _bulletSpawner;
+    [SerializeField] private Transform _shootPointTranform;
 
+    private AudioSource _audioSource;
 
 
     void Start()
     {
-        
+        _audioSource = GetComponent<AudioSource>();
     }
 
     
@@ -19,7 +21,8 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {            
-            _bulletSpawner.SpawnBullet(transform.position, ShootDirection.Right, typeof(NormalBullet));
+            _bulletSpawner.SpawnBullet(_shootPointTranform.position, ShootDirection.Right, typeof(NormalBullet), tag);
+            _audioSource .Play();
         }
     }
 }

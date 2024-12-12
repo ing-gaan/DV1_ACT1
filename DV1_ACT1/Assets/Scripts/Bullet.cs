@@ -13,11 +13,12 @@ public class Bullet : MonoBehaviour
     private ShootDirection _bulletDirection;
     public ShootDirection BulletDirection { get => _bulletDirection; set => _bulletDirection = value; }
 
+    private string _tagShotIt;
+    public string TagShotIt { get => _tagShotIt; set => _tagShotIt = value; }
 
 
 
-
-    void Start()
+    private void Start()
     {
         
     }

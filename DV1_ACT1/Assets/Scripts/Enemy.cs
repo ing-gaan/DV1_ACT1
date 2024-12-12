@@ -12,11 +12,16 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _minShootDelay = 0.5f;
     [SerializeField] private float _maxShootDelay = 3.0f;
     [SerializeField] private float _yRandAdjust = 1.0f;
+    [Range(0.1f, 1)] [SerializeField]  private float _minSlope;
+    [Range(2, 10)] [SerializeField] private float _maxSlope;
+
 
     private ObjectPool<Enemy> _enemyPool;
     public ObjectPool<Enemy> EnemyPool { get => _enemyPool; set => _enemyPool = value; }
     private BulletSpawner _bulletSpawner;
     public BulletSpawner BulletSpawner { get => _bulletSpawner; set => _bulletSpawner = value; }
+    private ExplosionSpawner _explosionSpawner;
+    public ExplosionSpawner ExplosionSpawner { get => _explosionSpawner; set => _explosionSpawner = value; }
 
 
     private float _timer = 0;
@@ -28,9 +33,14 @@ public class Enemy : MonoBehaviour
 
     private enum YState { UP, DOWN, NONE }
     private YState _yState;
+    private float _slope;
+    
+    private AudioSource _audioSource;
+
 
     void Start()
-    {
+    {        
+        _audioSource = GetComponent<AudioSource>();
         _timer = Random.Range(_minShootDelay, _maxShootDelay);
 
         _minY = SceneController.MinY + _yRandAdjust;
@@ -38,7 +48,8 @@ public class Enemy : MonoBehaviour
         _yRand = Random.Range(_minY, _maxY);
         
         _yState = YState.NONE;
-
+        
+ 
     }
 
 
@@ -50,14 +61,14 @@ public class Enemy : MonoBehaviour
             if (_yState == YState.NONE)
             {                
                 _yState = YState.UP;
+                _slope = Random.Range(_minSlope, _maxSlope);
             }
             else if (_yState == YState.DOWN)
             {
                 _yState = YState.NONE;
                 _yRand = Random.Range(_minY, _maxY);
             }
-
-            _velocity = new Vector3(-1, 1, 0).normalized * _speed * Time.deltaTime;
+            _velocity = new Vector3(-1, _slope, 0).normalized * _speed * Time.deltaTime;
             
         }
         else
@@ -65,13 +76,14 @@ public class Enemy : MonoBehaviour
             if (_yState == YState.NONE)
             {
                 _yState = YState.DOWN;
+                _slope = Random.Range(_minSlope, _maxSlope) * -1;
             }
             else if (_yState == YState.UP)
             {
                 _yState = YState.NONE;
                 _yRand = Random.Range(_minY, _maxY);
             }
-            _velocity = new Vector3(-1, -1, 0).normalized * _speed * Time.deltaTime;            
+            _velocity = new Vector3(-1, _slope, 0).normalized * _speed * Time.deltaTime;            
         }
 
 
@@ -81,20 +93,32 @@ public class Enemy : MonoBehaviour
         if(_timer > _maxShootDelay)
         {
             _timer = Random.Range(_minShootDelay, _maxShootDelay);
-            _bulletSpawner.SpawnBullet(_shootTransform.position, ShootDirection.Left, typeof(BigBullet));
+            _bulletSpawner.SpawnBullet(_shootTransform.position, ShootDirection.Left, typeof(BigBullet), tag);
+            _audioSource.Play();
         }
 
-        //if(transform.position.y)
-        //{
-
-        //}
 
     }
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        _enemyPool.Release(this);
+        GameObject collGObj = collision.gameObject;
+        if (collGObj.layer == LayerMask.NameToLayer("Bullet"))
+        {
+            if(collGObj.GetComponent<Bullet>().TagShotIt == "Player")
+            {                
+                _explosionSpawner.SpawnExplosion(transform.position);
+                _enemyPool.Release(this);                
+            }            
+        }
+        
+        if(collision.CompareTag("Boundary"))
+        {
+            _enemyPool.Release(this);
+        }
+
+
     }
 
 

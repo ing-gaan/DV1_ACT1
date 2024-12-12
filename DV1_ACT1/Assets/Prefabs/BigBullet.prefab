@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1301494331026149773}
   - component: {fileID: 3323995174255919712}
   - component: {fileID: 1377637994105172747}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BigBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,7 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
-  _lifeTime: 5
 --- !u!212 &1301494331026149773
 SpriteRenderer:
   m_ObjectHideFlags: 0
