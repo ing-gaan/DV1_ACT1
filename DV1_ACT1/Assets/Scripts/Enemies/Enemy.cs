@@ -138,16 +138,35 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {     
-        if(collision.CompareTag("Boundary"))
+        //if(collision.CompareTag("Boundary"))
+        //{
+        //    _enemyPool.Release(this);
+        //}
+        //else
+        //{
+        //    _explosionSpawner.SpawnExplosion(transform.position);
+        //    _enemyPool.Release(this);
+        //    _gameEventBusScrObj.RaiseEnemyKillEvent();
+        //}
+
+
+        GameObject collGObj = collision.gameObject;
+        if (collGObj.layer == LayerMask.NameToLayer("Bullet"))
+        {
+            if (collGObj.GetComponent<Bullet>().TagShotIt == "Player")
+            {
+                _explosionSpawner.SpawnExplosion(transform.position);
+                _enemyPool.Release(this);
+                _gameEventBusScrObj.RaiseEnemyKillEvent();
+            }
+        }
+
+        if (collision.CompareTag("Boundary"))
         {
             _enemyPool.Release(this);
         }
-        else
-        {
-            _explosionSpawner.SpawnExplosion(transform.position);
-            _enemyPool.Release(this);
-            _gameEventBusScrObj.RaiseEnemyKillEvent();
-        }
+
+
     }
 
 

@@ -3066,7 +3066,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boundaryPrefab: {fileID: 4393322405196247600, guid: cf3fb086802caec4499836689883cc93, type: 3}
   _boundaryWidth: 1
-  _shiftBoundaryAdjust: 3
+  _shiftBoundaryAdjust: 5
   _mainCamera: {fileID: 519420031}
 --- !u!4 &2106661985
 Transform:
