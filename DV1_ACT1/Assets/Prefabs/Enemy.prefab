@@ -156,10 +156,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62fed28dcfb68c44a9569c7a1160a7b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _timeEventBus: {fileID: 11400000, guid: c9badec04cc31264c8b415a5544bfbf2, type: 2}
+  _gameEventBusScrObj: {fileID: 11400000, guid: fdce23aed142cd1459382125a4e35f20, type: 2}
   _speed: 8
   _shootTransform: {fileID: 3016795052634316557}
   _minSpawnDelay: 0.5
-  _maxSpawnDelay: 2
+  _maxSpawnDelay: 3
   _yRandAdjust: 1
   _minSlope: 0.1
   _maxSlope: 5
@@ -247,7 +249,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.36697024, y: 0.09000003}
+  m_Offset: {x: 0.44850793, y: 0.09000003}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -258,7 +260,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.46425545, y: 1.7}
+  m_Size: {x: 2.0952117, y: 1.7}
   m_EdgeRadius: 0
 --- !u!50 &218392362312412960
 Rigidbody2D:

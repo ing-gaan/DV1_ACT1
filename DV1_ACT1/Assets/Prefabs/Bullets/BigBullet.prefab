@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1377637994105172747}
   m_Layer: 10
   m_Name: BigBullet
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f35e7c48cdb84fa40abdaf60715c3c99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameEventBusScrObj: {fileID: 11400000, guid: fdce23aed142cd1459382125a4e35f20, type: 2}
   _speed: 15
 --- !u!212 &1301494331026149773
 SpriteRenderer:

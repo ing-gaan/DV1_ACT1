@@ -1,25 +1,57 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
-using static UnityEngine.EventSystems.EventTrigger;
+
 
 public class EnemySpawner : MonoBehaviour
 {
+    [Header("---------- Event buses")]
+    [SerializeField] private TimeEventBusScrObj _timeEventBus;
+
+    [Header("---------- Prefabs")]
     [SerializeField] private Enemy _enemyPrefab;
+
+    [Header("---------- Spawners")]
     [SerializeField] private BulletSpawner _bulletSpawner;
     [SerializeField] private ExplosionSpawner _explosionSpawner;
+
+    [Header("---------- Spawn adjustments")]
     [SerializeField] private float _xSpawnAdjust = 1f;
     [SerializeField] private float _ySpawnAdjust = 1f;
     [SerializeField] private float _minSpawnDelay = 0.5f;
     [SerializeField] private float _maxSpawnDelay = 3f;
 
+
     private ObjectPool<Enemy> _enemyPool;
 
-    private float _timer = 0;
-    private float _xSpawnPos;
-    private float ySpawnPos;
-    private float _spawnDelay;
+    private float _timer = 0f;
+    private float _xSpawnPos = 0f;
+    private float ySpawnPos = 0f;
+    private float _spawnDelay = 0f;
+
+
+    
+
+    private void OnEnable()
+    {
+        _timeEventBus.OneHundredMillisecondsEvent += SpawnTimer;
+    }
+
+    private void OnDisable()
+    {
+        _timeEventBus.OneHundredMillisecondsEvent -= SpawnTimer;
+    }
+
+    private void SpawnTimer()
+    {
+        _timer += 0.1f;
+
+        if (_timer > _spawnDelay)
+        {
+            _timer = 0;
+            SetSpawnDelay();
+            _enemyPool.Get();
+        }
+    }
 
 
     private void Awake()
@@ -27,25 +59,19 @@ public class EnemySpawner : MonoBehaviour
         _enemyPool = new ObjectPool<Enemy>(CreateEnemy, GetEnemy, ReleaseEnemy, DestroyEnemy);
     }
 
-
-    void Start()
+    private void Start()
     {
         _xSpawnPos = SceneController.MaxX + _xSpawnAdjust;
+        SetSpawnDelay();
     }
+      
 
 
-
-    void Update()
+    private void SetSpawnDelay()
     {
-        _timer += Time.deltaTime;
-
-        if (_timer > _spawnDelay)
-        {
-            _timer = 0;
-            _spawnDelay = Random.Range(_minSpawnDelay, _maxSpawnDelay);
-            _enemyPool.Get();
-        }
+        _spawnDelay = Random.Range(_minSpawnDelay, _maxSpawnDelay);
     }
+
 
 
     private Enemy CreateEnemy()
@@ -56,22 +82,6 @@ public class EnemySpawner : MonoBehaviour
         enemy.ExplosionSpawner = _explosionSpawner;
         return enemy;
     }
-    private void GetEnemy(Enemy enemy)
-    {
-        //enemy.BulletDirection = _shootDirection;
-        
-        enemy.transform.position = SetSpawnPosition();
-        enemy.gameObject.SetActive(true);
-    }
-    private void ReleaseEnemy(Enemy enemy)
-    {
-        enemy.gameObject.SetActive(false);
-    }
-    private void DestroyEnemy(Enemy enemy)
-    {
-        Destroy(enemy.gameObject);
-    }
-
 
     private Vector3 SetSpawnPosition()
     {
@@ -81,4 +91,26 @@ public class EnemySpawner : MonoBehaviour
 
         return new Vector3(_xSpawnPos, ySpawnPos, 0);
     }
+
+    private void GetEnemy(Enemy enemy)
+    {
+        //enemy.BulletDirection = _shootDirection;
+        
+        enemy.transform.position = SetSpawnPosition();
+        enemy.gameObject.SetActive(true);
+    }
+        
+
+    private void ReleaseEnemy(Enemy enemy)
+    {
+        enemy.gameObject.SetActive(false);
+    }
+
+    private void DestroyEnemy(Enemy enemy)
+    {
+        Destroy(enemy.gameObject);
+    }
+
+
+    
 }

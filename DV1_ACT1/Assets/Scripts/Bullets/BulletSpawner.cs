@@ -1,18 +1,20 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
 public class BulletSpawner : MonoBehaviour
 {
+    
+    [Header("---------- Bullet prefabs")]
     [SerializeField] private Bullet _littleBulletPrefab;
     [SerializeField] private Bullet _normalBulletPrefab;
     [SerializeField] private Bullet _bigBulletPrefab;
     
+
     private ObjectPool<Bullet> _littleBulletPool;
     private ObjectPool<Bullet> _normalBulletPool;
     private ObjectPool<Bullet> _bigBulletPool;
+
 
     private ShootDirection _shootDirection;
     private Vector3 _spawnPosition;
@@ -22,23 +24,12 @@ public class BulletSpawner : MonoBehaviour
     private string _tagShotIt;
 
 
+    
     void Awake()
     {
         _littleBulletPool = new ObjectPool<Bullet>(CreateBullet, GetBullet, ReleaseBullet, DestroyBullet);
         _normalBulletPool = new ObjectPool<Bullet>(CreateBullet, GetBullet, ReleaseBullet, DestroyBullet);
         _bigBulletPool = new ObjectPool<Bullet>(CreateBullet, GetBullet, ReleaseBullet, DestroyBullet);
-    }
-
-
-    void Start()
-    {
-        
-    }
-
-    
-    void Update()
-    {
-        
     }
 
 
@@ -65,10 +56,8 @@ public class BulletSpawner : MonoBehaviour
             _bulletPrefab = _normalBulletPrefab;
             _bulletPool = _normalBulletPool;
         }
-
         _bulletPool.Get();
     }
-
 
     private Bullet CreateBullet()
     {

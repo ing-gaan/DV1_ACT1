@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Parallax : MonoBehaviour
 {
-
+    [Header("---------- Parallax adjusments")]
     [SerializeField] private float _speed;
     [SerializeField] private Vector3 _direction;
 
@@ -12,7 +10,7 @@ public class Parallax : MonoBehaviour
     private float _spriteLenght;
     private Vector3 _initPosition;
 
-    void Start()
+    private void Start()
     {
         _spriteLenght = GetComponent<SpriteRenderer>().size.x;
         _spriteLenght *= transform.localScale.x;
@@ -20,7 +18,7 @@ public class Parallax : MonoBehaviour
     }
 
     
-    void Update()
+    private void Update()
     {
         float resto = (_speed * Time.time) % _spriteLenght;
         transform.position = _initPosition + resto * _direction;

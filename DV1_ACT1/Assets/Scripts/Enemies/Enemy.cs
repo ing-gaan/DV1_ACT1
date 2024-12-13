@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -7,10 +5,19 @@ using UnityEngine.Pool;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("---------- Event buses")]
+    [SerializeField] private TimeEventBusScrObj _timeEventBus;
+    [SerializeField] private GameEventBusScrObj _gameEventBusScrObj;
+
+    [Header("---------- Enemy")]
     [SerializeField] private float _speed = 4f;
     [SerializeField] private Transform _shootTransform;
+
+    [Header("---------- Spawn adjusments")]
     [SerializeField] private float _minSpawnDelay = 0.5f;
     [SerializeField] private float _maxSpawnDelay = 3f;
+
+    [Header("---------- Vertical movement adjustments")]
     [SerializeField] private float _yRandAdjust = 1f;
     [Range(0.1f, 1)] [SerializeField]  private float _minSlope;
     [Range(2, 10)] [SerializeField] private float _maxSlope;
@@ -39,7 +46,38 @@ public class Enemy : MonoBehaviour
     private AudioSource _audioSource;
 
 
-    void Start()
+    private void OnEnable()
+    {
+        _timeEventBus.OneHundredMillisecondsEvent += SpawnTimer;
+        _gameEventBusScrObj.OneLiveLostEvent += OneLifeLost;
+    }
+
+    private void OnDisable()
+    {
+        _timeEventBus.OneHundredMillisecondsEvent -= SpawnTimer;
+        _gameEventBusScrObj.OneLiveLostEvent -= OneLifeLost;
+    }
+
+    private void SpawnTimer()
+    {
+        _timer += 0.1f;
+
+        if (_timer > _spawnDelay)
+        {
+            _timer = 0;
+            _spawnDelay = Random.Range(_minSpawnDelay, _maxSpawnDelay);
+            _bulletSpawner.SpawnBullet(_shootTransform.position, ShootDirection.Left, typeof(BigBullet), tag);
+            _audioSource.Play();
+        }
+    }
+
+    private void OneLifeLost()
+    {
+        _enemyPool.Release(this);
+    }
+
+
+    private void Start()
     {        
         _audioSource = GetComponent<AudioSource>();
         _spawnDelay = Random.Range(_minSpawnDelay, _maxSpawnDelay);
@@ -48,78 +86,68 @@ public class Enemy : MonoBehaviour
         _maxY = SceneController.MaxY - _yRandAdjust;
         _yRand = Random.Range(_minY, _maxY);
         
-        _yState = YState.NONE;
-        
+        _yState = YState.NONE;        
     }
 
 
-    void Update()
+    private void Update()
     {
-        
-        if (_yRand >= transform.position.y )
-        {
-            if (_yState == YState.NONE)
-            {                
+        EnemyMovement();
+    }
+
+
+    private void EnemyMovement()
+    {
+        bool goUp = _yRand >= transform.position.y;
+        bool withoutDirection = _yState == YState.NONE;
+        bool goingDown = _yState == YState.DOWN;
+        bool goingUp = _yState == YState.UP;
+
+        if (goUp)
+        {                        
+            if (withoutDirection)
+            {
                 _yState = YState.UP;
                 _slope = Random.Range(_minSlope, _maxSlope);
             }
-            else if (_yState == YState.DOWN)
+            else if (goingDown)
             {
                 _yState = YState.NONE;
                 _yRand = Random.Range(_minY, _maxY);
             }
             _velocity = new Vector3(-1, _slope, 0).normalized * _speed * Time.deltaTime;
-            
         }
         else
-        {
-            if (_yState == YState.NONE)
+        {            
+            if (withoutDirection)
             {
                 _yState = YState.DOWN;
                 _slope = Random.Range(_minSlope, _maxSlope) * -1;
             }
-            else if (_yState == YState.UP)
+            else if (goingUp)
             {
                 _yState = YState.NONE;
                 _yRand = Random.Range(_minY, _maxY);
             }
-            _velocity = new Vector3(-1, _slope, 0).normalized * _speed * Time.deltaTime;            
+            _velocity = new Vector3(-1, _slope, 0).normalized * _speed * Time.deltaTime;
         }
-
-
         transform.Translate(_velocity);
         _timer += Time.deltaTime;
-
-        if(_timer > _spawnDelay)
-        {
-            _timer = 0;
-            _spawnDelay = Random.Range(_minSpawnDelay, _maxSpawnDelay);
-            _bulletSpawner.SpawnBullet(_shootTransform.position, ShootDirection.Left, typeof(BigBullet), tag);
-            _audioSource.Play();
-        }
-
-
     }
 
 
     private void OnTriggerEnter2D(Collider2D collision)
-    {
-        GameObject collGObj = collision.gameObject;
-        if (collGObj.layer == LayerMask.NameToLayer("Bullet"))
-        {
-            if(collGObj.GetComponent<Bullet>().TagShotIt == "Player")
-            {                
-                _explosionSpawner.SpawnExplosion(transform.position);
-                _enemyPool.Release(this);                
-            }            
-        }
-        
+    {     
         if(collision.CompareTag("Boundary"))
         {
             _enemyPool.Release(this);
         }
-
-
+        else
+        {
+            _explosionSpawner.SpawnExplosion(transform.position);
+            _enemyPool.Release(this);
+            _gameEventBusScrObj.RaiseEnemyKillEvent();
+        }
     }
 
 

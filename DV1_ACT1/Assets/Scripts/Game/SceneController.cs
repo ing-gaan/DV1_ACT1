@@ -1,25 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class SceneController : MonoBehaviour
 {
+    [Header("---------- Boundaries adjustments")]
+    [SerializeField] private GameObject _boundaryPrefab;    
+    [SerializeField] private float _boundaryWidth = 1.0f;
+    [SerializeField] private float _shiftBoundaryAdjust = 2.0f;
+
+    [Header("---------- Camera")]
+    [SerializeField] private Camera _mainCamera;
+
+
     static public float MinX { get; private set; }
     static public float MaxX { get; private set; }
     static public float MinY { get; private set; }
     static public float MaxY { get; private set; }
 
-
-    [SerializeField] private GameObject _boundaryPrefab;
-    [SerializeField] private Camera _mainCamera;
-    [SerializeField] private float _boundaryWidth = 1.0f;
-    [SerializeField] private float _shiftBoundaryAdjust = 2.0f;
-
-
+    
     private float _cameraSize;
     private float _aspectRatio;
 
-    void Awake()
+
+
+    private void Awake()
     {
         _mainCamera.orthographic = true;
         _cameraSize = _mainCamera.orthographicSize;
@@ -37,11 +41,6 @@ public class SceneController : MonoBehaviour
         CreateBoundaries();
     }
 
-
-    void Update()
-    {
-        
-    }
 
     private void CreateBoundaries()
     {
@@ -63,8 +62,8 @@ public class SceneController : MonoBehaviour
         float shift;
         boundaryObj.GetComponent<BoxCollider2D>().size = new Vector2(_cameraSize * _aspectRatio * 2, _boundaryWidth);
 
-        bool isOnOneSide = boundaryLocation == Vector3.left || boundaryLocation == Vector3.right;
-        if (isOnOneSide)
+        bool isOnLeftOrRight = boundaryLocation == Vector3.left || boundaryLocation == Vector3.right;
+        if (isOnLeftOrRight)
         {
             boundaryObj.transform.eulerAngles = new Vector3(0, 0, -90);
             shift = MaxX + _shiftBoundaryAdjust;

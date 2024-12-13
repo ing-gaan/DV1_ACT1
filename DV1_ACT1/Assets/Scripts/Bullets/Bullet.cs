@@ -2,10 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Bullet : MonoBehaviour
 {
+    [Header("---------- Event buses")]
+    [SerializeField] private GameEventBusScrObj _gameEventBusScrObj;
+
+    [Header("---------- Bullet speed")]
     [SerializeField] private float _speed = 5.0f;
+
 
     private ObjectPool<Bullet> _bulletPool;
     public ObjectPool<Bullet> BulletPool { get => _bulletPool; set => _bulletPool = value; }
@@ -17,14 +23,22 @@ public class Bullet : MonoBehaviour
     public string TagShotIt { get => _tagShotIt; set => _tagShotIt = value; }
 
 
-
-    private void Start()
+    private void OnEnable()
     {
-        
+        _gameEventBusScrObj.OneLiveLostEvent += OneLifeLost;
     }
 
+    private void OnDisable()
+    {
+        _gameEventBusScrObj.OneLiveLostEvent -= OneLifeLost;
+    }
 
-    void Update()
+    private void OneLifeLost()
+    {
+        _bulletPool.Release(this);
+    }
+
+    private void Update()
     {
         Vector3 velocity = new Vector3((int)_bulletDirection, 0, 0);
         transform.Translate(velocity * _speed * Time.deltaTime);
@@ -35,7 +49,6 @@ public class Bullet : MonoBehaviour
     {
         _bulletPool.Release(this);
     }
-
 
 
 }

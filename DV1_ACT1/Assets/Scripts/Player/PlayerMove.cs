@@ -1,9 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
+    [Header("---------- Player speed")]
     [SerializeField] private float _speed = 5.0f;
 
     private float _halfSpriteX;
@@ -14,7 +14,7 @@ public class PlayerMove : MonoBehaviour
     private float _clampMaxY;
 
 
-    void Start()
+    private void Start()
     {
         SetDefaults();
     }
@@ -30,7 +30,7 @@ public class PlayerMove : MonoBehaviour
         _clampMaxY = SceneController.MaxY - _halfSpriteY;
     }
 
-    void Update()
+    private void Update()
     {
         float inputH = Input.GetAxisRaw("Horizontal");
         float inputV = Input.GetAxisRaw("Vertical");

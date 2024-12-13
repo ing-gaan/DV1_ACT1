@@ -1,20 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Pool;
 
 public class ExplosionSpawner : MonoBehaviour
 {
+    [Header("---------- Explosion prefab")]
     [SerializeField] private Explosion _explosion;
 
-
-
+    
     private ObjectPool<Explosion> _explosionPool;
     private Vector3 _spawnPosition;
 
 
-    void Awake()
+    private void Awake()
     {
         _explosionPool = new ObjectPool<Explosion>(CreateExplosion, GetExplosion, ReleaseExplosion, DestroyExplosion);       
     }
